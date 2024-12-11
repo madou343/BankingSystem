@@ -20,9 +20,10 @@ public class Main {
         LoginOrRegister();
 
     }
-
+  
     static
     Scanner scanner = new Scanner(System.in);
+
 
     public static void Registration() {
 
@@ -47,6 +48,7 @@ public class Main {
 
             clientNumber++;
             String fileName = "Client" + clientNumber + ".txt";
+            double accBalance = 0.0;
             File dateiClient = new File(fileName);
             try {
                 // Datei sofort erstellen, wenn sie noch nicht existiert
@@ -60,7 +62,9 @@ public class Main {
                 FileWriter writer = new FileWriter(dateiClient);
                 writer.write(registerName + "\n");
                 writer.write(registerPasswort + "\n");
+
                 writer.write(balanceAsString);
+
 
                 writer.flush();
                 writer.close();
@@ -90,6 +94,7 @@ public class Main {
         String clientNumberString = String.valueOf(clientNumber);
         if(clientNumber > 0){
         for(int i = 0; i < clientNumber; i++) {
+
 
             File datei = new File("C://Users//mtheele//IdeaProjects//BankingSystem//Client" + clientNumberString + ".txt");
             Scanner scan = null;
