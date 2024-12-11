@@ -2,6 +2,7 @@ package org.example;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.File;
@@ -16,21 +17,20 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Willkommen bei der Madous Bank.");
-
-        Registration();
-
-        Login();
+        LoginOrRegister();
 
     }
-static int clientNumber = 1;
-    static Scanner scanner = new Scanner(System.in);
+  
+    static
+    Scanner scanner = new Scanner(System.in);
+
 
     public static void Registration() {
 
         // text datei erstellen und auslesen danach nosql
 
 
-        System.out.println("Bitte registrieren sie sich an.");
+        System.out.println("Bitte registrieren sie sich.");
         System.out.println("Wie lautet ihr Name: ");
         String registerName = scanner.next();
 
@@ -40,9 +40,13 @@ static int clientNumber = 1;
         System.out.println("Bitte wiederholen sie das Passwort: ");
         String repeatPasswort = scanner.next();
 
+        double balance = 0.0;
+        String balanceAsString = String.valueOf(balance);
+
         if(repeatPasswort.equals(registerPasswort)) {
             System.out.println("Sie haben sich erfolgreich Registriert");
 
+            clientNumber++;
             String fileName = "Client" + clientNumber + ".txt";
             double accBalance = 0.0;
             File dateiClient = new File(fileName);
@@ -58,10 +62,13 @@ static int clientNumber = 1;
                 FileWriter writer = new FileWriter(dateiClient);
                 writer.write(registerName + "\n");
                 writer.write(registerPasswort + "\n");
-                writer.write(String.valueOf(accBalance) + "\n");
+
+                writer.write(balanceAsString);
+
 
                 writer.flush();
                 writer.close();
+                LoginOrRegister();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -70,32 +77,61 @@ static int clientNumber = 1;
             for (int i = 0; i < 10; i++) {
                 System.out.println();
             }
+            System.out.println("Die Registrierung ist gescheitert bitte probieren sie es nochmal");
             Registration();
         }
     }
 
     public static void Login() {
+
+
         System.out.println("Nenne Sie mir Ihren Benutzername: ");
         String tryLoginName = scanner.next();
 
         System.out.println("Nenne Sie mir Ihr Passwort: ");
         String tryLoginPasswort = scanner.next();
 
-        File datei = new File("C://Users//mtheele//IdeaProjects//BankingSystem//Client1.txt");
-        Scanner scan = null;
-        try {
-            scan = new Scanner(datei);
-        } catch(FileNotFoundException e) {
-            System.out.println("File not Found");
+        String clientNumberString = String.valueOf(clientNumber);
+        if(clientNumber > 0){
+        for(int i = 0; i < clientNumber; i++) {
+
+
+            File datei = new File("C://Users//mtheele//IdeaProjects//BankingSystem//Client" + clientNumberString + ".txt");
+            Scanner scan = null;
+            try {
+                scan = new Scanner(datei);
+            } catch (FileNotFoundException e) {
+                System.out.println("File not Found");
+                System.out.println(clientNumberString);
+            }
+
+            while (scan.hasNext()) {
+                String clientName = scan.next();
+                String clientPassword = scan.next();
+                if (clientName.equals(tryLoginName) && clientPassword.equals(tryLoginPasswort)) {
+
+                    currentClient = clientNumber;
+                    String getBalance = scan.next();
+                    System.out.println("Guten Tag " + clientName);
+                    System.out.println("Ihr Vermögen beläuft sich auf " + getBalance + " €");
+                    // Here I will write some methods like showing balance or transfer money
+                }
+            }
         }
-
-        while(scan.hasNext()) {
-            String clientName = scan.next();
-            String clientPassword = scan.next();
-            String accnal = scan.next();
-            System.out.println(clientName);
-            System.out.println(accnal);
-
+        } else{
+            System.out.println("Es wurde noch kein Konto angelegt:(");
+            Registration();
+        }
+    }
+    static int clientNumber = 0;
+   static int currentClient =1;
+    public static void LoginOrRegister() {
+        System.out.println("Wenn sie sich einloggen möchten drücken sie die '1' \nWenn sie sich bei uns registrieren möchten dann drücken sie die '2'. ");
+        int loginOrRegister = scanner.nextInt();
+        if(loginOrRegister == 1){
+            Login();
+        } else if(loginOrRegister == 2){
+            Registration();
         }
     }
 }
