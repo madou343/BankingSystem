@@ -23,8 +23,7 @@ public class Main {
 
     }
 static int clientNumber = 1;
-    static
-    Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in);
 
     public static void Registration() {
 
@@ -45,6 +44,7 @@ static int clientNumber = 1;
             System.out.println("Sie haben sich erfolgreich Registriert");
 
             String fileName = "Client" + clientNumber + ".txt";
+            double accBalance = 0.0;
             File dateiClient = new File(fileName);
             try {
                 // Datei sofort erstellen, wenn sie noch nicht existiert
@@ -58,6 +58,7 @@ static int clientNumber = 1;
                 FileWriter writer = new FileWriter(dateiClient);
                 writer.write(registerName + "\n");
                 writer.write(registerPasswort + "\n");
+                writer.write(String.valueOf(accBalance) + "\n");
 
                 writer.flush();
                 writer.close();
@@ -91,7 +92,9 @@ static int clientNumber = 1;
         while(scan.hasNext()) {
             String clientName = scan.next();
             String clientPassword = scan.next();
+            String accnal = scan.next();
             System.out.println(clientName);
+            System.out.println(accnal);
 
         }
     }
