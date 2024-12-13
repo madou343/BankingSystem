@@ -1,11 +1,8 @@
 package org.example;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.io.File;
 
 public class Main {
 
@@ -15,6 +12,8 @@ public class Main {
 
 
         Scanner scanner = new Scanner(System.in);
+
+        Initialisierung();
 
         System.out.println("Willkommen bei der Madous Bank.");
         LoginOrRegister();
@@ -46,32 +45,22 @@ public class Main {
         if(repeatPasswort.equals(registerPasswort)) {
             System.out.println("Sie haben sich erfolgreich Registriert");
 
-            clientNumber++;
-            String fileName = "Client" + clientNumber + ".txt";
-            double accBalance = 0.0;
-            File dateiClient = new File(fileName);
-            try {
-                // Datei sofort erstellen, wenn sie noch nicht existiert
-                if (dateiClient.createNewFile()) {
-                    System.out.println("Datei wurde sofort erstellt: " + dateiClient.getName());
-                } else {
-                    System.out.println("Datei existiert bereits: " + dateiClient.getName());
-                }
+            String csFile = "DataOfBank.csv";
 
-                // Schreiben in die Datei
-                FileWriter writer = new FileWriter(dateiClient);
-                writer.write(registerName + "\n");
-                writer.write(registerPasswort + "\n");
-
-                writer.write(balanceAsString);
-
+            try{ // Append-Modus
+                // Datenzeilen anhängen
+                FileWriter writer = new FileWriter(csFile, true);
+                String stringCurrenClient = String.valueOf(currentClient);
+                writer.append(stringCurrenClient + "," + registerName + "," + registerPasswort + "," + balanceAsString + "\n");
 
                 writer.flush();
                 writer.close();
-                LoginOrRegister();
+
+                System.out.println("Daten erfolgreich angehängt!");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("Fehler beim Anhängen an die Datei: " + e.getMessage());
             }
+
 
         }else {
             for (int i = 0; i < 10; i++) {
@@ -91,39 +80,33 @@ public class Main {
         System.out.println("Nenne Sie mir Ihr Passwort: ");
         String tryLoginPasswort = scanner.next();
 
-        String clientNumberString = String.valueOf(clientNumber);
-        if(clientNumber > 0){
-        for(int i = 0; i < clientNumber; i++) {
-
-
-            File datei = new File("C://Users//mtheele//IdeaProjects//BankingSystem//Client" + clientNumberString + ".txt");
-            Scanner scan = null;
+        String file = "C://Users//mtheele//IdeaProjects//BankingSystem//DataOfBank.csv";
+        BufferedReader reader = null;
+        String line = "";
             try {
-                scan = new Scanner(datei);
-            } catch (FileNotFoundException e) {
-                System.out.println("File not Found");
-                System.out.println(clientNumberString);
+                reader = new BufferedReader(new FileReader(file));
+                while((line = reader.readLine()) != null) {
+
+                    String[] row = line.split(",");
+
+                    if(row[1].equals(tryLoginName) && row[2].equals(tryLoginPasswort)){
+                        System.out.println(row[3]);
+                    }
+
+                    System.out.println();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            while (scan.hasNext()) {
-                String clientName = scan.next();
-                String clientPassword = scan.next();
-                if (clientName.equals(tryLoginName) && clientPassword.equals(tryLoginPasswort)) {
-
-                    currentClient = clientNumber;
-                    String getBalance = scan.next();
-                    System.out.println("Guten Tag " + clientName);
-                    System.out.println("Ihr Vermögen beläuft sich auf " + getBalance + " €");
-                    // Here I will write some methods like showing balance or transfer money
+            finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
-        } else{
-            System.out.println("Es wurde noch kein Konto angelegt:(");
-            Registration();
-        }
-    }
-    static int clientNumber = 0;
+
    static int currentClient =1;
     public static void LoginOrRegister() {
         System.out.println("Wenn sie sich einloggen möchten drücken sie die '1' \nWenn sie sich bei uns registrieren möchten dann drücken sie die '2'. ");
@@ -133,5 +116,34 @@ public class Main {
         } else if(loginOrRegister == 2){
             Registration();
         }
+    }
+
+    public static void Initialisierung() {
+
+            String fileName = "DataOfBank.csv";
+
+            File dateiClient = new File(fileName);
+            try {
+                // Datei sofort erstellen, wenn sie noch nicht existiert
+                if (dateiClient.createNewFile()) {
+                    System.out.println("Datei wurde sofort erstellt: " + dateiClient.getName());
+                } else {
+                    System.out.println("Datei existiert bereits: " + dateiClient.getName());
+                }
+
+                // Schreiben in die Datei
+                FileWriter writer = new FileWriter(dateiClient);
+                writer.write("0," + "MadousBank,");
+                writer.write("einszwei,");
+
+                writer.write("100.0\n");
+
+
+                writer.flush();
+                writer.close();
+                LoginOrRegister();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
     }
 }
