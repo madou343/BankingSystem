@@ -69,6 +69,7 @@ public class Main {
             System.out.println("Die Registrierung ist gescheitert bitte probieren sie es nochmal");
             Registration();
         }
+        LoginOrRegister();
     }
 
     public static void Login() {
