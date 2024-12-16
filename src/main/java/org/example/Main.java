@@ -153,13 +153,18 @@ public class Main {
 
     public static String WithdrawMoney(String balanceAsString) {
         System.out.println("Wie viel Geld möchten sie sich auszahlen?");
+        String returnStringTotalBalance = balanceAsString;
         double scan = scanner.nextDouble();
-        String depositString = String.valueOf(scan);
-        double balanceAsDouble = Double.parseDouble(balanceAsString);
-        double totalBalance = balanceAsDouble - scan;
-        double roundedBalance = Math.round(totalBalance * 100) / 100.0;
-        String returnStringTotalBalance = String.valueOf(roundedBalance);
-        System.out.println("\nIhr Kontostand nach der auszahlung beläuft sich auf " + returnStringTotalBalance + " €");
+        if(scan <= 1000) {
+            double balanceAsDouble = Double.parseDouble(balanceAsString);
+            double totalBalance = balanceAsDouble - scan;
+            double roundedBalance = Math.round(totalBalance * 100) / 100.0;
+            returnStringTotalBalance = String.valueOf(roundedBalance);
+            System.out.println("\nIhr Kontostand nach der auszahlung beläuft sich auf " + returnStringTotalBalance + " €");
+        }else{
+            System.out.println("Sie können maximal 1000 " + " €" + " abheben.");
+            WithdrawMoney(balanceAsString);
+        }
         return returnStringTotalBalance;
     }
 
