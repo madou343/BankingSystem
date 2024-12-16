@@ -53,6 +53,7 @@ public class Main {
                 String stringCurrenClient = String.valueOf(currentClient);
                 writer.append(stringCurrenClient + "," + registerName + "," + registerPasswort + "," + balanceAsString + "\n");
 
+                currentClient++;
                 writer.flush();
                 writer.close();
 
@@ -91,7 +92,7 @@ public class Main {
                     String[] row = line.split(",");
 
                     if(row[1].equals(tryLoginName) && row[2].equals(tryLoginPasswort)){
-                        System.out.println(row[3]);
+                        EnterDashboard(tryLoginName, row);
                     }
 
                     System.out.println();
@@ -117,6 +118,35 @@ public class Main {
         } else if(loginOrRegister == 2){
             Registration();
         }
+    }
+
+    public static void EnterDashboard(String tryLoginName, String[] row){
+        System.out.println("Willkommen " + tryLoginName);
+        System.out.println("Drücken sie die '1' um Ihren Kontostand einzusehen. Drücken sie die '2' um ein Einzahlung zu tätigen.");
+        System.out.println("Um eine Überweisung zu machen drücken sie bitte die '3'. ");
+        System.out.println("Wenn sie sich ausloggen möchten drücken sie die '4'.");
+        int theInput = scanner.nextInt();
+        if(theInput == 1){
+            System.out.println("\nIhr Kontostand beläuft sich auf " + row[3] + " €");
+        } else if(theInput == 2){
+            String currentBalance = row[3];
+            String newBalanceAmount = DepositMoney(currentBalance);
+            row[3] = newBalanceAmount;
+        } else if(theInput == 3){
+
+        }
+        EnterDashboard(tryLoginName, row);
+    }
+
+    public static String DepositMoney(String balanceAsString) {
+        System.out.println("Wie viel Geld möchten sie einzahlen?");
+        double scan = scanner.nextDouble();
+        String deopositString = String.valueOf(scan);
+        double balanceAsDouble = Double.parseDouble(balanceAsString);
+        double totalBalance = balanceAsDouble + scan;
+        String returnStringTotalBalance = String.valueOf(totalBalance);
+        System.out.println("\nSie haben erfolgreich " + deopositString  + " eingezahlt.");
+        return returnStringTotalBalance;
     }
 
     public static void Initialisierung() {
