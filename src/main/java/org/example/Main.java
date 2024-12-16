@@ -33,7 +33,7 @@ public class Main {
         System.out.println("Wie lautet ihr Name: ");
         String registerName = scanner.next();
 
-        System.out.println("Bitt legen sie ihr Passwort fest: ");
+        System.out.println("Bitte legen sie ihr Passwort fest: ");
         String registerPasswort = scanner.next();
 
         System.out.println("Bitte wiederholen sie das Passwort: ");
@@ -57,9 +57,9 @@ public class Main {
                 writer.flush();
                 writer.close();
 
-                System.out.println("Daten erfolgreich angehängt!");
+                System.out.println("Daten erfolgreich angehängt! \n");
             } catch (IOException e) {
-                System.out.println("Fehler beim Anhängen an die Datei: " + e.getMessage());
+                System.out.println("Fehler beim Anhängen an die Datei: " + e.getMessage() + "\n");
             }
 
 
@@ -121,11 +121,13 @@ public class Main {
     }
 
     public static void EnterDashboard(String tryLoginName, String[] row){
-        System.out.println("Willkommen " + tryLoginName);
-        System.out.println("Drücken sie die '1' um Ihren Kontostand einzusehen.");
-        System.out.println("Um eine Einzahlung zu machen drücken sie bitte die '2'. ");
-        System.out.println("Um eine Auszahlung zu machen drücken sie bitte die '3'. ");
-        System.out.println("Wenn sie sich ausloggen möchten drücken sie die '4'.");
+        System.out.println("Willkommen " + tryLoginName + " im Hauptmenü.");
+        System.out.println("Drücken sie folgende Tasten um:");
+        System.out.println("Kontostand: '1'");
+        System.out.println("Einzahlung: '2'");
+        System.out.println("Auszahlung: '3'");
+        System.out.println("Überweisen: '4'");
+        System.out.println("Ausloggen: '5'");
         int theInput = scanner.nextInt();
         String currentBalance = row[3];
         if(theInput == 1){
@@ -136,8 +138,45 @@ public class Main {
         } else if(theInput == 3){
             String newBalanceAmount = WithdrawMoney(currentBalance);
             row[3] = newBalanceAmount;
+        } else if(theInput == 4){
+            row[3] = TransferMoney(row[3]);
         }
         EnterDashboard(tryLoginName, row);
+    }
+
+    public static String TransferMoney(String SendersBalance){
+        System.out.println("An wen möchten sie gerne Geld versenden?");
+        int recipientNumber = scanner.nextInt();
+        String line = "";
+        BufferedReader reader = null;
+        String file = "C://Users//mtheele//IdeaProjects//BankingSystem//DataOfBank.csv";
+        try{
+            reader = new BufferedReader(new FileReader(file));
+            while((line = reader.readLine()) != null){
+
+                String[] rowOfRecipient = line.split(",");
+                int Iban = Integer.parseInt(rowOfRecipient[0]);
+                if(Iban == recipientNumber){
+                    System.out.println("Wie viel Geld möchten sie gerne überweisen.");
+                    double transferSum = scanner.nextDouble();
+                    String showAmount = String.valueOf(transferSum);
+                    double currentBalance = Double.parseDouble(SendersBalance);
+                    double finalBalanceSender = currentBalance - transferSum;
+                    double roundedFinalBalanceSender = Math.round(finalBalanceSender * 100) / 100.0;
+                    SendersBalance = String.valueOf(roundedFinalBalanceSender);
+
+                    double balanceOfRecipient = Double.parseDouble(rowOfRecipient[3]);
+                    double finalBalanceRecipient = balanceOfRecipient + transferSum;
+                    double roundedFinalBalanceRecipient = Math.round(finalBalanceRecipient * 100) / 100.0;
+                    rowOfRecipient[3] = String.valueOf(roundedFinalBalanceRecipient);
+                    System.out.println("Sie haben erfolgreich " + showAmount + " €" + " versendet.");
+                }
+
+            }
+        } catch  (Exception e) {
+            e.printStackTrace();
+        }
+        return SendersBalance;
     }
 
     public static String DepositMoney(String balanceAsString) {
@@ -147,7 +186,7 @@ public class Main {
         double balanceAsDouble = Double.parseDouble(balanceAsString);
         double totalBalance = balanceAsDouble + scan;
         String returnStringTotalBalance = String.valueOf(totalBalance);
-        System.out.println("\nSie haben erfolgreich " + deopositString + " €"  + " eingezahlt.");
+        System.out.println("\nSie haben erfolgreich " + deopositString + " €"  + " eingezahlt.\n");
         return returnStringTotalBalance;
     }
 
