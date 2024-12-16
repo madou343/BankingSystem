@@ -122,18 +122,20 @@ public class Main {
 
     public static void EnterDashboard(String tryLoginName, String[] row){
         System.out.println("Willkommen " + tryLoginName);
-        System.out.println("Drücken sie die '1' um Ihren Kontostand einzusehen. Drücken sie die '2' um ein Einzahlung zu tätigen.");
-        System.out.println("Um eine Überweisung zu machen drücken sie bitte die '3'. ");
+        System.out.println("Drücken sie die '1' um Ihren Kontostand einzusehen.");
+        System.out.println("Um eine Einzahlung zu machen drücken sie bitte die '2'. ");
+        System.out.println("Um eine Auszahlung zu machen drücken sie bitte die '3'. ");
         System.out.println("Wenn sie sich ausloggen möchten drücken sie die '4'.");
         int theInput = scanner.nextInt();
+        String currentBalance = row[3];
         if(theInput == 1){
             System.out.println("\nIhr Kontostand beläuft sich auf " + row[3] + " €");
         } else if(theInput == 2){
-            String currentBalance = row[3];
             String newBalanceAmount = DepositMoney(currentBalance);
             row[3] = newBalanceAmount;
         } else if(theInput == 3){
-
+            String newBalanceAmount = WithdrawMoney(currentBalance);
+            row[3] = newBalanceAmount;
         }
         EnterDashboard(tryLoginName, row);
     }
@@ -145,7 +147,19 @@ public class Main {
         double balanceAsDouble = Double.parseDouble(balanceAsString);
         double totalBalance = balanceAsDouble + scan;
         String returnStringTotalBalance = String.valueOf(totalBalance);
-        System.out.println("\nSie haben erfolgreich " + deopositString  + " eingezahlt.");
+        System.out.println("\nSie haben erfolgreich " + deopositString + " €"  + " eingezahlt.");
+        return returnStringTotalBalance;
+    }
+
+    public static String WithdrawMoney(String balanceAsString) {
+        System.out.println("Wie viel Geld möchten sie sich auszahlen?");
+        double scan = scanner.nextDouble();
+        String depositString = String.valueOf(scan);
+        double balanceAsDouble = Double.parseDouble(balanceAsString);
+        double totalBalance = balanceAsDouble - scan;
+        double roundedBalance = Math.round(totalBalance * 100) / 100.0;
+        String returnStringTotalBalance = String.valueOf(roundedBalance);
+        System.out.println("\nIhr Kontostand nach der auszahlung beläuft sich auf " + returnStringTotalBalance + " €");
         return returnStringTotalBalance;
     }
 
